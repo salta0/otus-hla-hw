@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db_postgres:
+    build: ./db-postgres
+    image: otus-hw/db-postgres
+    restart: always
+    shm_size: 128mb
+    ports:
+      - '5432:5432'
+  app:
+    build: ./app
+    image: otus-hw/app
+    environment:
+      RACK_ENV: development
+    ports: 
+      - '3100:3000'

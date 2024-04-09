@@ -1,0 +1,7 @@
+development:
+  host: db_postgres
+  port: 5432
+  dbname: app_dev
+  user: postgres
+  password: password
+
