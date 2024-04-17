@@ -14,4 +14,17 @@ class UserQueries < BaseQuery
     biography: TEXT_TYPE,
     city: VARCHAR_TYPE
   }
+
+  def search_by_name_prefix(limit)
+    first_name = params[:first_name]
+    last_name = params[:last_name]
+    like_sql = ["first_name like $1::#{columns[:first_name]}",
+                "last_name like $2::#{columns[:last_name]}"].join(' AND ')
+    values = [first_name, last_name].map { |v| "#{v}%" }
+    complete_sql = <<-SQL
+      SELECT * FROM #{table_name} WHERE #{like_sql} LIMIT #{limit}
+    SQL
+
+    DBConnection.exec_query(complete_sql, values)
+  end
 end

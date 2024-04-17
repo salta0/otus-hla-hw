@@ -47,6 +47,14 @@ get '/user/get/:id' do
   MultiJson.dump(user.slice(*%w[id first_name last_name birthdate biography city]))
 end
 
+get '/user/search' do
+  res = UserServices::SearchService.call(params)
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  users = res[:result]
+  MultiJson.dump(users.map { |u| u.slice(*%w[id first_name last_name birthdate biography city]) })
+end
+
 error StandardError do
   halt 500, MultiJson.dump({ error: 'Some error occured' })
 end
