@@ -1,16 +1,34 @@
 version: '3'
 services:
-  db_postgres:
+  db_postgres_main:
     build: ./db-postgres
     image: otus-hw/db-postgres
-    restart: always
-    shm_size: 128mb
-    ports:
-      - '5432:5432'
+    shm_size: 2g
+    volumes:
+      - "$HOME/otus/volumes/pg_main:/var/lib/postgresql/data:rw"
+  db_postgres_replica_1:
+    build: ./db-postgres
+    image: otus-hw/db-postgres
+    shm_size: 2g
+    volumes:
+      - "$HOME/otus/volumes/pg_replica_1:/var/lib/postgresql/data:rw"
+  db_postgres_replica_2:
+    build: ./db-postgres
+    image: otus-hw/db-postgres
+    shm_size: 2g
+    volumes:
+      - "$HOME/otus/volumes/pg_replica_2:/var/lib/postgresql/data:rw"
   app:
     build: ./app
     image: otus-hw/app
+    depends_on:
+      - db_postgres_main
     environment:
       RACK_ENV: development
-    ports: 
-      - '3100:3000'
+  web:
+    build: ./nginx
+    image: otus-hw/nginx
+    depends_on:
+      - app
+    ports:
+      - 8080:80

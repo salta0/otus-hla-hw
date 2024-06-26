@@ -19,7 +19,7 @@ class BaseQuery
     return nil unless columns.key?(name.to_sym)
 
     DBConnection.exec_query(
-      "SELECT * FROM #{table_name} WHERE #{name} = $1::#{columns[name]};",
+      :read, "SELECT * FROM #{table_name} WHERE #{name} = $1::#{columns[name]};",
       [value]
     ).first
   end
@@ -28,7 +28,7 @@ class BaseQuery
     column_list = params.keys.join(', ')
     values_list = params.keys.each_with_index.map { |name, i| "$#{i + 1}::#{columns[name]}" }.join(', ')
     sql = "INSERT INTO #{table_name} (#{column_list}) VALUES (#{values_list});"
-    DBConnection.exec_query(sql, params.values)
+    DBConnection.exec_query(:write, sql, params.values)
   end
 
   def update_by_id(id)
@@ -36,7 +36,7 @@ class BaseQuery
       UPDATE #{table_name} SET #{build_assigment_list_for_update}#{' '}
       WHERE #{id[:name]} = $#{params.keys.length + 1}
     SQL
-    DBConnection.exec_query(sql, params.values.push(id[:value]))
+    DBConnection.exec_query(:write, sql, params.values.push(id[:value]))
   end
 
   protected

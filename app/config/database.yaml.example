@@ -1,7 +1,13 @@
-development:
-  host: db_postgres
+main:
+  host: db_postgres_main
   port: 5432
   dbname: app_dev
   user: postgres
   password: password
 
+replica:
+  host: db_postgres_replica_1
+  port: 5432
+  dbname: app_dev
+  user: postgres
+  password: password

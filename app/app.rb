@@ -12,6 +12,8 @@ before do
   content_type :json
 
   unless ['/user/register', '/login'].include?(request.path_info)
+    halt 401, MultiJson.dump({ error: 'Unathorized' }) unless env.key?('HTTP_AUTHORIZATION')
+    
     token = env.fetch('HTTP_AUTHORIZATION').to_s.split(' ').last
     res = UserServices::AuthByTokenService.call(token)
     halt 401, MultiJson.dump({ error: 'Unathorized' }) unless res[:success]
@@ -45,6 +47,14 @@ get '/user/get/:id' do
   halt 404, MultiJson.dump({ error: 'Not found' }) if user.nil?
 
   MultiJson.dump(user.slice(*%w[id first_name last_name birthdate biography city]))
+end
+
+get '/user/search' do
+  res = UserServices::SearchService.call(params)
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  users = res[:result]
+  MultiJson.dump(users)
 end
 
 error StandardError do

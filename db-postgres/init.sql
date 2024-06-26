@@ -8,3 +8,6 @@ CREATE TABLE users (
     biography       text,
     city            varchar(50)
 );
+
+CREATE INDEX l_last_name_l_first_name_users_idx ON 
+users (lower(last_name) varchar_pattern_ops, lower(first_name) varchar_pattern_ops);
