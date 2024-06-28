@@ -3,8 +3,11 @@
 source 'https://rubygems.org'
 
 gem 'bcrypt'
+gem 'byebug'
 gem 'multi_json'
 gem 'pg'
 gem 'puma'
 gem 'rackup', '~> 2.1'
+gem 'redis'
+gem 'sidekiq'
 gem 'sinatra'

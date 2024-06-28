@@ -6,7 +6,7 @@ class DBConnection
   DB_CONFS = {
     read: PG_REPLICA_DB_CONF,
     write: PG_MAIN_DB_CONF
-  }
+  }.freeze
 
   def initialize(mode, sql, params)
     @mode = mode

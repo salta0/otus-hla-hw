@@ -11,3 +11,7 @@ replica:
   dbname: app_dev
   user: postgres
   password: password
+
+redis:
+  host: db_redis
+  port: 6379

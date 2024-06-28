@@ -5,6 +5,7 @@ require 'multi_json'
 
 require_relative 'initialize'
 require_relative 'services/user_services'
+require_relative 'services/post_services'
 
 set :show_exceptions, false
 
@@ -13,7 +14,7 @@ before do
 
   unless ['/user/register', '/login'].include?(request.path_info)
     halt 401, MultiJson.dump({ error: 'Unathorized' }) unless env.key?('HTTP_AUTHORIZATION')
-    
+
     token = env.fetch('HTTP_AUTHORIZATION').to_s.split(' ').last
     res = UserServices::AuthByTokenService.call(token)
     halt 401, MultiJson.dump({ error: 'Unathorized' }) unless res[:success]
@@ -31,7 +32,7 @@ post '/user/register' do
   MultiJson.dump({ id: res[:result] })
 end
 
-post '/login' do
+post '/user/login' do
   user_params = MultiJson.load request.body.read, symbolize_keys: true
   res = UserServices::LoginUserService.call(user_params[:id], user_params[:password])
   halt 401, MultiJson.dump({ error: res[:error].message }) unless res[:success]
@@ -55,6 +56,102 @@ get '/user/search' do
 
   users = res[:result]
   MultiJson.dump(users)
+end
+
+post '/friend/:id/add' do
+  user = @current_user
+  res = UserServices::FetchByIdService.call(params[:id])
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  friend = res[:result]
+  halt 404, MultiJson.dump({ error: 'Not found' }) if user.nil?
+
+  res = UserServices::AddFriendService.call(user:, friend:)
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  status 200
+end
+
+delete '/friend/:id' do
+  user = @current_user
+  res = UserServices::FetchByIdService.call(params[:id])
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  friend = res[:result]
+  halt 404, MultiJson.dump({ error: 'Not found' }) if user.nil?
+
+  UserServices::RemoveFriendService.call(user:, friend:)
+  status 200
+end
+
+get '/friends' do
+  user = @current_user
+  res = UserServices::FetchFriendsService.call(user['id'])
+  friends = res[:result]
+
+  MultiJson.dump(friends)
+end
+
+post '/posts' do
+  user = @current_user
+  post_params = MultiJson.load request.body.read, symbolize_keys: true
+  res = PostServices::AddService.call(user:, body: post_params[:body])
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  MultiJson.dump({ post: res[:result] })
+end
+
+get '/posts' do
+  user = @current_user
+  res = PostServices::ListService.call(user:)
+
+  MultiJson.dump({ post: res[:result] })
+end
+
+get '/posts/:id' do
+  res = PostServices::FetchByIdService.call(params[:id])
+  post = res[:result]
+  halt 404 if post.nil?
+
+  MultiJson.dump({ post: res[:result] })
+end
+
+put '/posts/:id' do
+  user = @current_user
+  post_params = MultiJson.load request.body.read, symbolize_keys: true
+
+  res = PostServices::FetchByIdService.call(params[:id])
+  post = res[:result]
+  halt 404 if post.nil?
+
+  res = PostServices::UpdateService.call(user:, body: post_params[:body], post:)
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  MultiJson.dump({ post: res[:result] })
+end
+
+delete '/posts/:id' do
+  user = @current_user
+
+  res = PostServices::FetchByIdService.call(params[:id])
+  post = res[:result]
+  halt 404 if post.nil?
+
+  res = PostServices::DeleteService.call(user:, post:)
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  MultiJson.dump({ post: res[:result] })
+end
+
+get '/feed' do
+  user = @current_user
+
+  res = PostServices::FeedService.call(user_id: user['id'],
+                                       page: params[:page].to_i,
+                                       per_page: params[:per_page].to_i)
+  posts = res[:result]
+
+  MultiJson.dump(posts.map { |r| MultiJson.load(r) })
 end
 
 error StandardError do

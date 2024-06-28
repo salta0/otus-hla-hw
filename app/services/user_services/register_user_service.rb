@@ -5,7 +5,7 @@ module UserServices
     class ValidationErrors < StandardError
     end
 
-    PSWD_REGEX = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/.freeze
+    PSWD_REGEX = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/
 
     def initialize(params)
       @params = params
@@ -41,7 +41,7 @@ module UserServices
       end
       id = user_id
       password = BCrypt::Password.create(params[:password])
-      profile_info.merge({ id: id, password: password })
+      profile_info.merge({ id:, password: })
     end
 
     def user_id

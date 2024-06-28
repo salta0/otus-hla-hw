@@ -25,4 +25,18 @@ class UserQueries < BaseQuery
 
     DBConnection.exec_query(:read, complete_sql, values)
   end
+
+  def fetch_friends
+    user_id = params[:user_id]
+    user_table = table_name
+    friend_table = UsersFriendQueries.table_name
+
+    sql = <<-SQL
+      SELECT #{params[:fields].join(',')} FROM #{table_name}
+      LEFT JOIN #{friend_table} ON (#{friend_table}.friend_id = #{user_table}.id)#{' '}
+      WHERE #{friend_table}.user_id = $1::#{columns[:id]}
+    SQL
+
+    DBConnection.exec_query(:read, sql, [user_id])
+  end
 end

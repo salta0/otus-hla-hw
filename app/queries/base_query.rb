@@ -8,6 +8,7 @@ class BaseQuery
   UUID_TYPE = :uuid
   INT_TYPE = :int
   DATE_TYPE = :date
+  TIMESTAMP_TYPE = :timestamp
 
   def initialize(params)
     @params = params
@@ -27,8 +28,8 @@ class BaseQuery
   def insert
     column_list = params.keys.join(', ')
     values_list = params.keys.each_with_index.map { |name, i| "$#{i + 1}::#{columns[name]}" }.join(', ')
-    sql = "INSERT INTO #{table_name} (#{column_list}) VALUES (#{values_list});"
-    DBConnection.exec_query(:write, sql, params.values)
+    sql = "INSERT INTO #{table_name} (#{column_list}) VALUES (#{values_list}) RETURNING *;"
+    DBConnection.exec_query(:write, sql, params.values).first
   end
 
   def update_by_id(id)
