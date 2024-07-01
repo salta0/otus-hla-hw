@@ -42,3 +42,36 @@ services:
   #   shm_size: 2g
   #   volumes:
   #     - "$HOME/otus/volumes/pg_replica_2:/var/lib/postgresql/data:rw"
+
+  citus_master:
+    build: ./citus-master
+    image: otus-hw/citus-master
+    container_name: "${COMPOSE_PROJECT_NAME:-citus}_master"
+    ports: ["${COORDINATOR_EXTERNAL_PORT:-5432}:5432"]
+    labels: ["com.citusdata.role=Master"]
+    environment: &AUTH
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      PGUSER: "${POSTGRES_USER:-postgres}"
+      PGPASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_HOST_AUTH_METHOD: "${POSTGRES_HOST_AUTH_METHOD:-trust}"
+      CITUS_HOST: citus_master
+  citus_worker:
+    image: "citusdata/citus:12.1.3"
+    labels: ["com.citusdata.role=Worker"]
+    depends_on: [citus_manager]
+    environment: *AUTH
+    command: "/wait-for-manager.sh"
+    volumes:
+      - healthcheck-volume:/healthcheck
+  citus_manager:
+    container_name: "${COMPOSE_PROJECT_NAME:-citus}_manager"
+    image: "citusdata/membership-manager:0.3.0"
+    restart: on-failure
+    volumes:
+      - "${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock"
+      - healthcheck-volume:/healthcheck
+    depends_on: [citus_master]
+    environment: *AUTH
+volumes:
+  healthcheck-volume:

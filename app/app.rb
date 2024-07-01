@@ -6,6 +6,7 @@ require 'multi_json'
 require_relative 'initialize'
 require_relative 'services/user_services'
 require_relative 'services/post_services'
+require_relative 'services/message_services'
 
 set :show_exceptions, false
 
@@ -152,6 +153,37 @@ get '/feed' do
   posts = res[:result]
 
   MultiJson.dump(posts.map { |r| MultiJson.load(r) })
+end
+
+post '/dialog/:user_id/send' do
+  res = UserServices::FetchByIdService.call(params[:user_id])
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  user = res[:result]
+  halt 404, MultiJson.dump({ error: 'Not found' }) if user.nil?
+  
+  message_params = MultiJson.load request.body.read, symbolize_keys: true
+  res = MessageServices::SendService.call(from_id: @current_user['id'],
+  to_id: user['id'],
+  body: message_params[:body])
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  MultiJson.dump({ message: res[:result] })
+end
+
+get '/dialog/:user_id' do
+  res = UserServices::FetchByIdService.call(params[:user_id])
+  halt 400, MultiJson.dump({ error: res[:error].message }) unless res[:success]
+
+  user = res[:result]
+  halt 404, MultiJson.dump({ error: 'Not found' }) if user.nil?
+  
+  res = MessageServices::ListService.call(from_id: @current_user['id'],
+  to_id: user['id'],
+  page: params[:page].to_i,
+  per_page: params[:per_page].to_i)
+
+  MultiJson.dump(res[:result])
 end
 
 error StandardError do
