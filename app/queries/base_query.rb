@@ -9,6 +9,7 @@ class BaseQuery
   INT_TYPE = :int
   DATE_TYPE = :date
   TIMESTAMP_TYPE = :timestamp
+  ARRAY_UUID_TYPE = 'uuid[]'.to_sym
 
   def initialize(params)
     @params = params
