@@ -49,7 +49,7 @@ module UserServices
 
     def generate_and_save_access_token!
       access_token = SecureRandom.uuid
-      UserQueries.new({ access_token: access_token }).update_by_id({ name: 'id', value: id })
+      UserQueries.new({ access_token: }).update_by_id({ name: 'id', value: id })
       access_token
     end
   end

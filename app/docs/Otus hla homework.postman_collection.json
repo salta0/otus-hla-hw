@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1d5cb5c7-29bf-4fda-9475-06b00b8d4320",
+		"_postman_id": "486e2701-9222-4a02-995e-846453010c55",
 		"name": "Otus hla homework",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "33298369"
@@ -105,6 +105,9 @@
 											"language": "json"
 										}
 									}
+								},
+								"url": {
+									"raw": ""
 								}
 							},
 							"status": "Bad Request",
@@ -142,6 +145,9 @@
 											"language": "json"
 										}
 									}
+								},
+								"url": {
+									"raw": ""
 								}
 							},
 							"status": "Internal Server Error",
@@ -424,115 +430,710 @@
 							"body": "{\n    \"error\": \"Some error occurred\"\n}"
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "login | Authentificate by ID and password",
-			"request": {
-				"auth": {
-					"type": "noauth"
 				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"<string>\",\n    \"password\": \"<string>\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/login",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": [
 				{
-					"name": "success login",
-					"originalRequest": {
+					"name": "search | Search users by first name and last name prefix",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/search?first_name=А&last_name=Б",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"search"
+							],
+							"query": [
+								{
+									"key": "first_name",
+									"value": "А"
+								},
+								{
+									"key": "last_name",
+									"value": "Б"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 | Return search result",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friends",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friends"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"8d33dfe7-e350-4c57-ac7c-18d35f1659fa\",\n        \"first_name\": \"Михаил\",\n        \"last_name\": \"Абрамов\",\n        \"birthdate\": \"1908-01-01\",\n        \"biography\": null,\n        \"city\": \"Горно-Алтайск\"\n    },\n    {\n        \"id\": \"abfd8805-a3fa-40fb-a73c-01338ff9e840\",\n        \"first_name\": \"Яна\",\n        \"last_name\": \"Гришина\",\n        \"birthdate\": \"1920-01-01\",\n        \"biography\": null,\n        \"city\": \"Миасс\"\n    }\n]"
+						},
+						{
+							"name": "500 | Server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friends",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friends"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "login | Authentificate by ID and password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+							"raw": "{\n    \"id\": \"fa7c3b61-9a0f-40a3-a515-e9d241903730\",\n    \"password\": \"simplepass111\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": [
 						{
-							"key": "Content-Type",
-							"value": "application/json",
-							"name": "Content-Type",
-							"description": "",
-							"type": "text"
+							"name": "success login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": ""
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"<string>\"\n}"
+						},
+						{
+							"name": "invalid login or password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Invalid login or password\"\n}"
+						},
+						{
+							"name": "server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Some error occurred\"\n}"
 						}
-					],
-					"cookie": [],
-					"body": "{\n    \"access_token\": \"<string>\"\n}"
+					]
+				}
+			]
+		},
+		{
+			"name": "friend",
+			"item": [
+				{
+					"name": "add | Add friend",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friend/:id/add",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friend",
+								":id",
+								"add"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6a26f5ba-a2cf-400e-af44-71871449ccd5",
+									"description": "Friend id"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 | Friend added",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friend/:id/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friend",
+										":id",
+										"add"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+											"description": "Friend id"
+										}
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "",
+									"value": "",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "404 | Friend not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friend/:id/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friend",
+										":id",
+										"add"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+											"description": "Friend id"
+										}
+									]
+								}
+							},
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "400 | Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friend/:id/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friend",
+										":id",
+										"add"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+											"description": "Friend id"
+										}
+									]
+								}
+							},
+							"code": 400,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "500 | Server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friend/:id/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friend",
+										":id",
+										"add"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+											"description": "Friend id"
+										}
+									]
+								}
+							},
+							"code": 500,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
 				},
 				{
-					"name": "invalid login or password",
-					"originalRequest": {
-						"method": "POST",
-						"header": []
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json",
-							"name": "Content-Type",
-							"description": "",
-							"type": "text"
+					"name": "delete | Remove friend",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friend/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friend",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+									"description": "Friend ID"
+								}
+							]
 						}
-					],
-					"cookie": [],
-					"body": "{\n    \"error\": \"Invalid login or password\"\n}"
+					},
+					"response": [
+						{
+							"name": "200 | Friend deleted",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friend/:id/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friend",
+										":id",
+										"add"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+											"description": "Friend id"
+										}
+									]
+								}
+							},
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "",
+									"value": "",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "404 | Friend not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friend/:id/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friend",
+										":id",
+										"add"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+											"description": "Friend id"
+										}
+									]
+								}
+							},
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "500 | Server error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friend/:id/add",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friend",
+										":id",
+										"add"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8d33dfe7-e350-4c57-ac7c-18d35f1659fa",
+											"description": "Friend id"
+										}
+									]
+								}
+							},
+							"code": 500,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
 				},
 				{
-					"name": "server error",
-					"originalRequest": {
-						"method": "POST",
-						"header": []
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json",
-							"name": "Content-Type",
-							"description": "",
-							"type": "text"
+					"name": "get | Fetch friends list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/friends",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"friends"
+							]
 						}
-					],
-					"cookie": [],
-					"body": "{\n    \"error\": \"Some error occurred\"\n}"
+					},
+					"response": [
+						{
+							"name": "200 | Return friends list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friends",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friends"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"8d33dfe7-e350-4c57-ac7c-18d35f1659fa\",\n        \"first_name\": \"Михаил\",\n        \"last_name\": \"Абрамов\",\n        \"birthdate\": \"1908-01-01\",\n        \"biography\": null,\n        \"city\": \"Горно-Алтайск\"\n    },\n    {\n        \"id\": \"abfd8805-a3fa-40fb-a73c-01338ff9e840\",\n        \"first_name\": \"Яна\",\n        \"last_name\": \"Гришина\",\n        \"birthdate\": \"1920-01-01\",\n        \"biography\": null,\n        \"city\": \"Миасс\"\n    }\n]"
+						},
+						{
+							"name": "500 | Server error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/friends",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"friends"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "post",
+			"item": [
+				{
+					"name": "create | Add new post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"body\": \"blah blah 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/posts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list | List users posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/posts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get | Fetch post by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/posts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "16816"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update | Update post",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"body\": \"blah blah\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/posts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete | Remove post",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/posts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "feed | List friends posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/feed?page=1&per_page=30",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"feed"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Number of page"
+								},
+								{
+									"key": "per_page",
+									"value": "30",
+									"description": "Number of posts per page"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -572,7 +1173,7 @@
 	"variable": [
 		{
 			"key": "authToken",
-			"value": "<uuid>"
+			"value": "7675b796-0eb8-47d9-99d5-ca3fe8a45f8f"
 		},
 		{
 			"key": "baseUrl",

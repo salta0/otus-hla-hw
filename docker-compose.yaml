@@ -4,23 +4,21 @@ services:
     build: ./db-postgres
     image: otus-hw/db-postgres
     shm_size: 2g
-    volumes:
-      - "$HOME/otus/volumes/pg_main:/var/lib/postgresql/data:rw"
-  db_postgres_replica_1:
-    build: ./db-postgres
-    image: otus-hw/db-postgres
-    shm_size: 2g
-    volumes:
-      - "$HOME/otus/volumes/pg_replica_1:/var/lib/postgresql/data:rw"
-  db_postgres_replica_2:
-    build: ./db-postgres
-    image: otus-hw/db-postgres
-    shm_size: 2g
-    volumes:
-      - "$HOME/otus/volumes/pg_replica_2:/var/lib/postgresql/data:rw"
+    # volumes:
+    #   - "$HOME/otus/volumes/pg_main:/var/lib/postgresql/data:rw"
+  db_redis:
+    image: redis
+  app_sidekiq:
+    build: ./app
+    image: otus-hw/app_sidekiq
+    command: "bundle exec sidekiq -C 'config/sidekiq.yaml' -v -r './initialize.rb'"
+    depends_on:
+      - db_redis
+      - app
   app:
     build: ./app
     image: otus-hw/app
+    command: "bundle exec puma -p 3000 -t 1:4 -w 16"
     depends_on:
       - db_postgres_main
     environment:
@@ -32,3 +30,15 @@ services:
       - app
     ports:
       - 8080:80
+  # db_postgres_replica_1:
+  #   build: ./db-postgres
+  #   image: otus-hw/db-postgres
+  #   shm_size: 2g
+  #   volumes:
+  #     - "$HOME/otus/volumes/pg_replica_1:/var/lib/postgresql/data:rw"
+  # db_postgres_replica_2:
+  #   build: ./db-postgres
+  #   image: otus-hw/db-postgres
+  #   shm_size: 2g
+  #   volumes:
+  #     - "$HOME/otus/volumes/pg_replica_2:/var/lib/postgresql/data:rw"
