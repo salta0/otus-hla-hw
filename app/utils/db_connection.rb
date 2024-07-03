@@ -5,7 +5,8 @@ require 'pg'
 class DBConnection
   DB_CONFS = {
     read: PG_REPLICA_DB_CONF,
-    write: PG_MAIN_DB_CONF
+    write: PG_MAIN_DB_CONF,
+    dialog: PG_DIALOG_DB_CONF
   }.freeze
 
   def initialize(mode, sql, params)
